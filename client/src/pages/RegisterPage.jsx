@@ -8,10 +8,11 @@ export const RegisterPage = () => {
   const [name, setName] = useState('Ananya');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [accessCode, setAccessCode] = useState('ananya2026');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { register, seedDemo } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -29,21 +30,12 @@ export const RegisterPage = () => {
     setError('');
 
     try {
-      await register(name, email, password);
+      await register(name, email, password, accessCode);
       navigate('/onboarding');
     } catch (err) {
       setError(err.message || 'Registration failed');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDemoAccess = async () => {
-    try {
-      await seedDemo();
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.message || 'Failed to enter demo space');
     }
   };
 
@@ -68,10 +60,10 @@ export const RegisterPage = () => {
           </div>
 
           <h2 className="text-3xl font-bold font-editorial text-[#171316] mb-1">
-            Welcome, lovely.
+            Welcome, Ananya ♡
           </h2>
           <p className="text-xs text-[#171316]/70 mb-6">
-            Begin your personal cycle, feelings and wellness journal.
+            Create your private personal cycle & wellness space.
           </p>
 
           {error && (
@@ -100,7 +92,7 @@ export const RegisterPage = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ananya@example.com"
+                placeholder="ananya@gmail.com"
                 required
                 className="w-full px-4 py-3 rounded-xl border-2 border-[#171316] bg-[#FFF9F5] focus:outline-none focus:ring-2 focus:ring-[#F04478]"
               />
@@ -118,6 +110,23 @@ export const RegisterPage = () => {
               />
             </div>
 
+            <div>
+              <label className="block font-bold text-[#171316] mb-1">
+                Sanctuary Access Key ♡
+              </label>
+              <input
+                type="text"
+                value={accessCode}
+                onChange={(e) => setAccessCode(e.target.value)}
+                placeholder="ananya2026"
+                required
+                className="w-full px-4 py-3 rounded-xl border-2 border-[#171316] bg-[#FFF9F5] font-mono text-xs focus:outline-none focus:ring-2 focus:ring-[#F04478]"
+              />
+              <span className="text-[10px] text-[#171316]/60 mt-1 block">
+                Private key ensuring only you can register in this sanctuary.
+              </span>
+            </div>
+
             <button
               type="submit"
               disabled={loading}
@@ -129,21 +138,12 @@ export const RegisterPage = () => {
           </form>
 
           <div className="mt-6 pt-6 border-t border-[#171316]/10 text-center">
-            <p className="text-xs text-[#171316]/70 mb-3">
+            <p className="text-xs text-[#171316]/70">
               Already have an account?{' '}
               <Link to="/login" className="font-bold text-[#C51F46] hover:underline">
                 Sign In
               </Link>
             </p>
-
-            <button
-              type="button"
-              onClick={handleDemoAccess}
-              className="w-full py-2.5 rounded-xl bg-[#FFF0F3] text-[#C51F46] font-bold text-xs border border-[#F04478] hover:bg-[#F9C3D0]/60 transition-all flex items-center justify-center gap-2"
-            >
-              <Sparkles className="w-4 h-4 text-[#F04478]" />
-              <span>Or enter Ananya's preloaded demo account</span>
-            </button>
           </div>
         </div>
       </div>

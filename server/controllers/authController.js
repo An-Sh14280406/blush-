@@ -6,17 +6,28 @@ const WellnessLog = require('../models/WellnessLog');
 const Notification = require('../models/Notification');
 const bcrypt = require('bcryptjs');
 const { generateToken } = require('../middleware/authMiddleware');
-const { seedDemoDataForUser, DEMO_USER_EMAIL, DEMO_USER_PASSWORD } = require('../services/demoSeedService');
+
+const SANCTUARY_CODE = (process.env.SANCTUARY_CODE || 'ananya2026').trim().toLowerCase();
 
 // @route   POST /api/auth/register
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, accessCode } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
     }
 
-    const userExists = await User.findOne({ email });
+    // Private Sanctuary Access Check: Don't allow everyone to register
+    if (SANCTUARY_CODE) {
+      if (!accessCode || accessCode.trim().toLowerCase() !== SANCTUARY_CODE) {
+        return res.status(403).json({
+          success: false,
+          message: 'Invalid Sanctuary Access Key. This private space is reserved exclusively for Ananya ♡',
+        });
+      }
+    }
+
+    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
     if (userExists) {
       return res.status(400).json({ success: false, message: 'An account with this email already exists' });
     }
@@ -25,17 +36,17 @@ exports.register = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await User.create({
-      name,
-      email,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
       onboardingCompleted: false,
     });
 
-    // Create a welcome notification
+    // Create a personalized welcome notification
     await Notification.create({
       userId: user._id,
-      title: `Welcome to blush., ${user.name}! ♡`,
-      message: 'Your personal sanctuary for cycle wellness, mood tracking, and gentle reflections is ready.',
+      title: `Welcome home to blush., ${user.name}! ♡`,
+      message: 'Your personal, private sanctuary for cycle wellness, feelings, and self-care is ready.',
       type: 'system',
     });
 
@@ -190,76 +201,6 @@ exports.completeOnboarding = async (req, res, next) => {
         avatar: user.avatar,
         onboardingCompleted: user.onboardingCompleted,
         preferences: user.preferences,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-// @route   POST /api/auth/seed-demo
-exports.seedDemoAccount = async (req, res, next) => {
-  try {
-    let user = await User.findOne({ email: DEMO_USER_EMAIL });
-    if (!user) {
-      const salt = await bcrypt.genSalt(10);
-      const passwordHash = await bcrypt.hash(DEMO_USER_PASSWORD, salt);
-      user = await User.create({
-        name: 'Ananya',
-        email: DEMO_USER_EMAIL,
-        password: passwordHash,
-        onboardingCompleted: true,
-        preferences: {
-          averageCycleLength: 30.5,
-          averageBleedingDuration: 5,
-          cycleRegularity: 'regular',
-          lastPeriodStartDate: new Date('2026-11-02T00:00:00.000Z'),
-          lastPeriodEndDate: new Date('2026-11-06T00:00:00.000Z'),
-        },
-      });
-    }
-
-    // Seed the period records
-    await seedDemoDataForUser(user._id);
-
-    // Also populate some realistic sample wellness logs for the demo experience
-    await MoodLog.deleteMany({ userId: user._id });
-    await MoodLog.insertMany([
-      { userId: user._id, date: '2026-11-14', moods: ['Calm', 'Affectionate'], intensity: 4, notes: 'Felt very cozy having hot chai and reading.' },
-      { userId: user._id, date: '2026-11-15', moods: ['Playful', 'Happy'], intensity: 5, notes: 'Sunshine walk in the park! Felt very lively.' },
-      { userId: user._id, date: '2026-11-16', moods: ['Sociable', 'Excited'], intensity: 4, notes: 'Met with friends, wonderful energy.' },
-      { userId: user._id, date: '2026-11-17', moods: ['Happy', 'Relaxed'], intensity: 4, notes: 'Gentle evening reflection at home.' },
-    ]);
-
-    await SymptomLog.deleteMany({ userId: user._id });
-    await SymptomLog.insertMany([
-      { userId: user._id, date: '2026-11-02', symptoms: [{ name: 'Cramps', intensity: 'moderate' }, { name: 'Fatigue', intensity: 'mild' }], notes: 'Day 1 cramps, used hot water bag.' },
-      { userId: user._id, date: '2026-11-03', symptoms: [{ name: 'Bloating', intensity: 'mild' }], notes: 'Drinking warm herbal tea.' },
-    ]);
-
-    await WellnessLog.deleteMany({ userId: user._id });
-    await WellnessLog.insertMany([
-      { userId: user._id, date: '2026-11-14', energy: 'normal', sleepHours: 8, sleepQuality: 'good', cravings: ['Chocolate'], notes: 'Slept well.' },
-      { userId: user._id, date: '2026-11-15', energy: 'high', sleepHours: 7.5, sleepQuality: 'excellent', cravings: ['Sweet'], notes: 'Energized morning.' },
-      { userId: user._id, date: '2026-11-16', energy: 'high', sleepHours: 7, sleepQuality: 'good', cravings: [], notes: 'Active day.' },
-      { userId: user._id, date: '2026-11-17', energy: 'normal', sleepHours: 8, sleepQuality: 'good', cravings: ['Chocolate'], notes: 'Peaceful routine.' },
-    ]);
-
-    res.json({
-      success: true,
-      message: 'Demo account for Ananya loaded successfully with exact historical cycle records!',
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        onboardingCompleted: true,
-        preferences: user.preferences,
-      },
-      token: generateToken(user._id),
-      credentials: {
-        email: DEMO_USER_EMAIL,
-        password: DEMO_USER_PASSWORD,
       },
     });
   } catch (err) {

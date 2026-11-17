@@ -5,18 +5,18 @@ import { BowIcon, StrawberryIcon, HeartSticker } from '../components/ScrapbookDe
 import { AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
 
 export const LoginPage = () => {
-  const [email, setEmail] = useState('ananya@blush.love');
-  const [password, setPassword] = useState('blushpassword123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login, seedDemo } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('Please provide email and password');
+      setError('Please provide your email and password');
       return;
     }
 
@@ -28,19 +28,6 @@ export const LoginPage = () => {
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Invalid email or password');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDemoOneClick = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      await seedDemo();
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.message || 'Failed to enter demo space');
     } finally {
       setLoading(false);
     }
@@ -115,22 +102,12 @@ export const LoginPage = () => {
             </button>
           </form>
 
-          {/* Quick Demo Button */}
-          <div className="mt-6 pt-6 border-t border-[#171316]/10 text-center space-y-3">
-            <button
-              type="button"
-              onClick={handleDemoOneClick}
-              disabled={loading}
-              className="w-full py-3 rounded-xl bg-[#FFF0F3] text-[#C51F46] font-bold text-xs sm:text-sm border-2 border-[#F04478] hover:bg-[#F9C3D0]/60 transition-all flex items-center justify-center gap-2 shadow-sm"
-            >
-              <Sparkles className="w-4 h-4 text-[#F04478]" />
-              <span>One-Click Demo: Enter Ananya's Space</span>
-            </button>
-
+          {/* Link to Register */}
+          <div className="mt-6 pt-6 border-t border-[#171316]/10 text-center">
             <p className="text-xs text-[#171316]/70">
-              Need a new account?{' '}
+              First time here?{' '}
               <Link to="/register" className="font-bold text-[#C51F46] hover:underline">
-                Create Account
+                Create Fresh Account ♡
               </Link>
             </p>
           </div>

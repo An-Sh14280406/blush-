@@ -57,12 +57,10 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectDB();
-    // Pre-populate Ananya's demo account and historical data
-    await ensureDemoAccount();
 
     app.listen(PORT, () => {
       console.log(`\n🌸 blush. backend server running on http://localhost:${PORT}`);
-      console.log(`♡ Ready for Ananya\n`);
+      console.log(`♡ Exclusively for Ananya\n`);
     });
   } catch (err) {
     console.error('Failed to start server:', err);

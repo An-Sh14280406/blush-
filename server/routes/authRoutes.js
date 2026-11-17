@@ -6,7 +6,6 @@ const {
   getMe,
   updateProfile,
   completeOnboarding,
-  seedDemoAccount,
   exportUserData,
   deleteAccount,
 } = require('../controllers/authController');
@@ -14,7 +13,6 @@ const { protect } = require('../middleware/authMiddleware');
 
 router.post('/register', register);
 router.post('/login', login);
-router.post('/seed-demo', seedDemoAccount);
 
 router.get('/me', protect, getMe);
 router.put('/profile', protect, updateProfile);

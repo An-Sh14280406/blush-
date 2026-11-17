@@ -17,18 +17,8 @@ import {
 } from 'lucide-react';
 
 export const LandingPage = () => {
-  const { seedDemo, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const handleEnterDemo = async () => {
-    try {
-      await seedDemo();
-      navigate('/dashboard');
-    } catch (err) {
-      console.error(err);
-      navigate('/login');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#FFF4E9] bg-dot-pattern selection:bg-[#F27F9D] selection:text-white pb-16">
@@ -64,17 +54,17 @@ export const LandingPage = () => {
             <>
               <Link
                 to="/login"
-                className="hidden sm:inline-block px-4 py-2 font-semibold text-sm text-[#171316] hover:text-[#C51F46] transition-colors"
+                className="px-4 py-2 font-semibold text-xs sm:text-sm text-[#171316] hover:text-[#C51F46] transition-colors"
               >
                 Sign In
               </Link>
-              <button
-                onClick={handleEnterDemo}
+              <Link
+                to="/register"
                 className="px-5 py-2.5 rounded-xl bg-[#F04478] text-white font-bold text-xs sm:text-sm border-2 border-[#171316] shadow-scrapbook-sm hover:-translate-y-0.5 transition-all flex items-center gap-2"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Enter Ananya's Space ♡</span>
-              </button>
+                <span>Create Fresh Account ♡</span>
+              </Link>
             </>
           )}
         </div>
@@ -116,19 +106,19 @@ export const LandingPage = () => {
 
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={handleEnterDemo}
+            <Link
+              to="/register"
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#F04478] text-white font-bold text-base sm:text-lg border-2 border-[#171316] shadow-scrapbook hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
             >
               <Sparkles className="w-5 h-5" />
-              <span>Explore Ananya's Demo Space ♡</span>
-            </button>
+              <span>Create Fresh Account ♡</span>
+            </Link>
 
             <Link
-              to="/register"
+              to="/login"
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white text-[#171316] font-bold text-base sm:text-lg border-2 border-[#171316] shadow-scrapbook hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
             >
-              <span>Create Fresh Account</span>
+              <span>Sign In to Your Space</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>

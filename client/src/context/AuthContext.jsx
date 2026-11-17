@@ -43,24 +43,14 @@ export const AuthProvider = ({ children }) => {
     throw new Error(res.message || 'Login failed');
   };
 
-  const register = async (name, email, password) => {
-    const res = await api.register({ name, email, password });
+  const register = async (name, email, password, accessCode) => {
+    const res = await api.register({ name, email, password, accessCode });
     if (res.success && res.token) {
       localStorage.setItem('blush_token', res.token);
       setUser(res.user);
       return res;
     }
     throw new Error(res.message || 'Registration failed');
-  };
-
-  const seedDemo = async () => {
-    const res = await api.seedDemo();
-    if (res.success && res.token) {
-      localStorage.setItem('blush_token', res.token);
-      setUser(res.user);
-      return res;
-    }
-    throw new Error(res.message || 'Failed to seed demo data');
   };
 
   const logout = () => {
@@ -86,7 +76,6 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
-        seedDemo,
         logout,
         refreshUser,
         isAuthenticated: !!user,

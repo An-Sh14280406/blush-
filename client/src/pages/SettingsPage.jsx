@@ -17,11 +17,10 @@ import {
 
 export const SettingsPage = () => {
   const { openLogPeriod } = useOutletContext();
-  const { user, logout, seedDemo, refreshUser } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const [exporting, setExporting] = useState(false);
-  const [resetting, setResetting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -50,24 +49,7 @@ export const SettingsPage = () => {
     }
   };
 
-  // 2. Re-seed Demo Data
-  const handleResetDemo = async () => {
-    if (!window.confirm("Reset Ananya's account to the verified preloaded cycle data?")) return;
-    setResetting(true);
-    setError('');
-    try {
-      await seedDemo();
-      await refreshUser();
-      setMessage("Ananya's historical records have been cleanly restored!");
-      setTimeout(() => setMessage(''), 4000);
-    } catch (err) {
-      setError(err.message || 'Failed to reset demo data');
-    } finally {
-      setResetting(false);
-    }
-  };
-
-  // 3. Delete Account
+  // 2. Delete Account
   const handleDeleteAccount = async () => {
     const confirmation = window.prompt(
       "Type 'DELETE' to permanently erase your blush. account and all health entries:"
@@ -137,30 +119,6 @@ export const SettingsPage = () => {
             >
               <FileText className="w-4 h-4 text-[#F04478]" />
               <span>{exporting ? 'Exporting...' : 'Download JSON Export'}</span>
-            </button>
-          </div>
-        </ScrapbookCard>
-
-        {/* Demo Data Reset Card */}
-        <ScrapbookCard variant="pink">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h4 className="font-bold text-base text-[#171316] mb-1 flex items-center gap-2">
-                <RefreshCw className="w-4 h-4 text-[#C51F46]" />
-                <span>Reset Preloaded Demo Records</span>
-              </h4>
-              <p className="text-xs text-[#171316]/70 max-w-md">
-                Restore the exact preloaded historical records for Ananya (March, May, June, August observation, September, October, November).
-              </p>
-            </div>
-
-            <button
-              onClick={handleResetDemo}
-              disabled={resetting}
-              className="px-5 py-2.5 rounded-xl bg-[#F04478] text-white font-bold text-xs border-2 border-[#171316] shadow-scrapbook-sm hover:-translate-y-0.5 transition-all flex items-center gap-2 shrink-0 self-start sm:self-center"
-            >
-              <RefreshCw className="w-4 h-4" />
-              <span>{resetting ? 'Resetting...' : 'Restore Demo Data'}</span>
             </button>
           </div>
         </ScrapbookCard>

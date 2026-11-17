@@ -32,7 +32,6 @@ export const api = {
   getMe: () => request('/auth/me'),
   updateProfile: (body) => request('/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
   completeOnboarding: (body) => request('/auth/onboarding', { method: 'POST', body: JSON.stringify(body) }),
-  seedDemo: () => request('/auth/seed-demo', { method: 'POST' }),
   exportData: () => request('/auth/export'),
   deleteAccount: () => request('/auth/account', { method: 'DELETE' }),
 
