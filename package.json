@@ -1,0 +1,24 @@
+{
+  "name": "blush",
+  "version": "1.0.0",
+  "description": "blush. A little world for Ananya ♡ — Personalized menstrual cycle, mood tracking, fertility estimation and wellness app",
+  "main": "server/server.js",
+  "scripts": {
+    "install-all": "npm install && npm install --prefix server && npm install --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "node server/server.js",
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "test": "cd server && npm test"
+  },
+  "keywords": [
+    "blush",
+    "ananya",
+    "cycle-tracker",
+    "mood-journal",
+    "wellness",
+    "mern"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}
